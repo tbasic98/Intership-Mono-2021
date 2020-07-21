@@ -6,39 +6,45 @@ using System.Threading.Tasks;
 using EmployeeMultilayerModel;
 using EmployeeMultilayerRepository;
 using EmployeeMultilayer.Service.Common;
+using EmployeeMultilayer.Repository.Common;
 
 namespace EmployeeMultilayerService
 {
     public class EmployeeService : IEmployeeService
     {
+        public EmployeeService(IEmployeeRepository repository)
+        {
+            this.repository = repository;
+        }
+        protected IEmployeeRepository repository { set; get; }
         public List<EmployeeModel> listOfEmployees = new List<EmployeeModel>();
-        EmployeeMultilayerRepository.EmployeeRepository employeeRepository = new EmployeeMultilayerRepository.EmployeeRepository();
+        //EmployeeMultilayerRepository.EmployeeRepository employeeRepository = new EmployeeMultilayerRepository.EmployeeRepository();
         public async Task<List<EmployeeModel>> AllEmployees()
         {
-            listOfEmployees = await employeeRepository.AllEmployees();
+            listOfEmployees = await repository.AllEmployees();
             return listOfEmployees;
         }
 
         public async Task<List<EmployeeModel>> EmployeeById(Guid employeeId)
         {
-            listOfEmployees = await employeeRepository.EmployeeById(employeeId);
+            listOfEmployees = await repository.EmployeeById(employeeId);
             return listOfEmployees;
         }
 
         public async Task AddNewEmployee(EmployeeModel employee)
         {
             employee.EmployeeId = new Guid();
-            await employeeRepository.AddNewEmployee(employee);
+            await repository.AddNewEmployee(employee);
         }
 
         public async Task UpdateEmployee(Guid id, EmployeeModel employee)
         {
-            await employeeRepository.UpdateEmployee(id, employee);
+            await repository.UpdateEmployee(id, employee);
         }
 
         public async Task<bool> DeleteEmployee(Guid employeeId)
         {
-            return await (employeeRepository.DeleteEmployee(employeeId));
+            return await (repository.DeleteEmployee(employeeId));
         }
     }
 }
